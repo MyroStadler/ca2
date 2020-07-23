@@ -1,0 +1,15 @@
+!.gitkeep
+.DS_Store
+.idea
+.vscode
+/node_modules
+/vendor
+*.log
+*.local.php
+/local/*
+/docker-compose.override.yml
+
+# .dist files
+/.env
+/phpunit.xml
+

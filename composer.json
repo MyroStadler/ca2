@@ -1,0 +1,27 @@
+{
+    "name": "myrostadler/ca2",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Myro Stadler",
+            "email": "myro.stadler@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/Core/",
+            "Delivery\\": "src/Delivery/",
+            "Implementation\\": "src/Implementation/",
+            "Test\\Core\\": "tests/Core/",
+            "Test\\Delivery\\": "tests/Delivery/",
+            "Test\\Implementation\\": "tests/Implementation/"
+        }
+    },
+    "require": {
+        "phpunit/phpunit": "^9.2",
+        "twig/twig": "^3.0",
+        "myrostadler/namestream": "^1.0"
+    }
+
+}

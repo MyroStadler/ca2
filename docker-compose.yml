@@ -1,0 +1,63 @@
+version: '3'
+
+networks:
+  ca2-network:
+
+services:
+  ca2-php-cli:
+    build:
+      context: docker/php-cli
+    tty: true
+    volumes:
+      - ./:/var/www/ca2
+      - ./docker/php-cli/php.ini-development:/usr/local/etc/php/php.ini
+    networks:
+      - ca2-network
+
+  ca2-php-fpm:
+    build:
+      context: docker/php-fpm
+      args:
+        - XDEBUG_IDEKEY=${XDEBUG_IDEKEY}
+        - XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST}
+        - XDEBUG_REMOTE_PORT=${XDEBUG_REMOTE_PORT}
+    tty: true
+    volumes:
+      - ./:/var/www/ca2
+      - ./docker/php-cli/php.ini-development:/usr/local/etc/php/php.ini
+    networks:
+      - ca2-network
+
+  ca2-nginx:
+    build:
+      context: docker/nginx
+    ports:
+      - "80:80"
+    tty: true
+    volumes:
+      - ./:/var/www/ca2
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - ca2-network
+
+  ca2-apache:
+    build:
+      context: docker/httpd
+    ports:
+      - "8080:80"
+    tty: true
+    volumes:
+      - ./:/var/www/ca2
+      - ./docker/httpd/ca2.conf:/usr/local/apache2/conf/ca2.conf
+    networks:
+      - ca2-network
+
+  ca2-mailhog:
+    build:
+      context: docker/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    restart: unless-stopped
+    networks:
+      - ca2-network
