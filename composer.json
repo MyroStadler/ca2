@@ -14,13 +14,20 @@
             "Delivery\\": "src/Delivery/",
             "Implementation\\": "src/Implementation/",
             "Test\\": "tests/src/"
+            "Fixtures\\": "fixtures/src/"
         }
     },
     "require": {
         "phpunit/phpunit": "^9.2",
         "twig/twig": "^3.0",
         "myrostadler/namestream": "^1.0",
-        "vlucas/phpdotenv": "^5.1"
+        "vlucas/phpdotenv": "^5.1",
+        "doctrine/dbal": "^2.10",
+        "doctrine/orm": "^2.7",
+        "doctrine/migrations": "^3.0",
+        "doctrine/data-fixtures": "^1.4",
+        "symfony/yaml": "^5.1",
+        "symfony/console": "^5.1"
     }
 
 }

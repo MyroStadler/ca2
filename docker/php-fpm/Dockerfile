@@ -1,7 +1,3 @@
-# Docker file for php-fpm
-# 2019-07-10 - v1 - James Kerslake
-# 2020-05-15 - v1.1 - Myro Stadler - add args instead of hardcoded xdebug settings
-
 FROM php:7.3-fpm
 
 ARG XDEBUG_IDEKEY

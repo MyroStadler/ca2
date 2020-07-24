@@ -1,6 +1,3 @@
-# Dockerfile for php-cli
-# 2019-07-10 - v1 - James K
-# 2019-08-13 - v1.1 - James K - adds settings for mailhog
 FROM php:7.3
 
 # install php modules

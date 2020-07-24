@@ -7,10 +7,10 @@
 *.log
 *.local.php
 /local/*
-/docker-compose.override.yml
 
 # .example files
 /.env
 /.env.test
 /phpunit.xml
-
+/docker-compose.override.yml
+/.env.make.override
