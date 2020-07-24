@@ -16,39 +16,61 @@ all:
 .PHONY: verify
 verify:
 	@echo '${BLUE}* Verifying${NO_COLOR}'
-	@test -f ./.env || (echo ${RED}Please create .env from .env.dist${NO_COLOUR}; exit 1)
-	@test -f ./phpunit.xml || (echo ${RED}Please create phpunit.xml from phpunit.xml.dist${NO_COLOUR}; exit 1)
+	@test -f ./.env || (echo ${RED}Please create .env from .env.example${NO_COLOUR}; exit 1)
+	@test -f ./.env.test || (echo ${RED}Please create .env.test from .env.test.example${NO_COLOUR}; exit 1)
+	@test -f ./phpunit.xml || (echo ${RED}Please create phpunit.xml from phpunit.xml.example${NO_COLOUR}; exit 1)
 	@echo '${GREEN}OK${GREEN}'
 
 .PHONY: install
 install:
 	@make verify --no-print-directory
+	@make down --no-print-directory
+	@make up --no-print-directory
+	@make composer_install --no-print-directory
+	@make composer_autoload --no-print-directory
+	@make yarn_install --no-print-directory
+	@make frontend --no-print-directory
+
+.PHONY: down
+down:
 	@echo '${BLUE}* Stopping docker containers${NO_COLOR}'
 	@docker-compose down
+
+.PHONY: up
+up:
 	@echo '${BLUE}* Building docker containers${NO_COLOR}'
 	@docker-compose up -d --force-recreate --remove-orphans
+
+.PHONY: composer_install
+composer_install:
 	@echo '${BLUE}* Composer install${NO_COLOR}'
 	@docker-compose exec -T --user $$(id -u ${USER}):$$(id -g ${USER}) ca2-php-cli sh -c "composer install --no-scripts --prefer-dist --quiet"
+
+.PHONY: composer_update
+composer_update:
+	@echo '${BLUE}* Composer update{NO_COLOR}'
+	@docker-compose exec -T --user $$(id -u ${USER}):$$(id -g ${USER}) ca2-php-cli sh -c "composer update --no-scripts --prefer-dist --quiet"
+
+.PHONY: composer_autoload
+composer_autoload:
 	@echo '${BLUE}* Dumping autoload${NO_COLOR}'
 	@docker-compose exec -T --user $$(id -u ${USER}):$$(id -g ${USER}) ca2-php-cli sh -c "composer dump-autoload --no-scripts --quiet"
+
+.PHONY: yarn_install
+yarn_install:
 	@echo '${BLUE}* Yarn install${NO_COLOR}'
 	@docker-compose exec -T --user $$(id -u ${USER}):$$(id -g ${USER}) ca2-php-cli sh -c "yarn install"
-	@make assets --no-print-directory
-# 	@echo '${BLUE}* Migrate database${NO_COLOR}'
-# 	@docker-compose exec -T ca2-php-cli sh -c "./bin/console doctrine:migrations:migrate -n"
-# 	@echo '${BLUE}* Load fixtures${NO_COLOR}'
-# 	@docker-compose exec -T ca2-php-cli sh -c "./bin/console doctrine:fixtures:load -n"
+
+.PHONY: frontend
+frontend:
+	@echo '${BLUE}* SASS build${NO_COLOR}'
+	@docker-compose exec -T --user $$(id -u ${USER}):$$(id -g ${USER}) ca2-php-cli sh -c "yarn sass frontend/sass/main.scss public/css/main.css"
 
 .PHONY: test
 test:
 	@make verify --no-print-directory
 	@echo '${BLUE}* Running PHPUnit Tests${NO_COLOR}'
 	@docker-compose exec -T ca2-php-cli sh -c "./vendor/bin/phpunit tests"
-
-.PHONY: assets
-assets:
-	@echo '${BLUE}* SASS build${NO_COLOR}'
-	@docker-compose exec -T --user $$(id -u ${USER}):$$(id -g ${USER}) ca2-php-cli sh -c "yarn sass assets/sass/main.scss public/css/main.css"
 
 .PHONY: header
 header:

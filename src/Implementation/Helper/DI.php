@@ -19,28 +19,57 @@ class DI implements DIInterface
 {
   /**
    * @param string $class
-   * @param bool $new
+   * @param array|null $createArgs
+   * @param bool $throw
    * @return mixed|null
    * @throws FactoryClassNotFoundException
+   * @throws MethodNotFoundException
    */
-  public static function get(string $class, bool $throw = true)
+  public static function create(string $class, array $createArgs = null, bool $throw = true)
+  {
+    return static::call('create', $class, $createArgs, $throw);
+  }
+
+  /**
+   * @param string $class
+   * @param array|null $createArgs
+   * @param bool $throw
+   * @return mixed|null
+   * @throws FactoryClassNotFoundException
+   * @throws MethodNotFoundException
+   */
+  public static function retrieve(string $class, array $createArgs = null, bool $throw = true)
+  {
+    return static::call('retrieve', $class, $createArgs, $throw);
+  }
+
+  /**
+   * @param string $factoryMethod
+   * @param string $class
+   * @param array|null $createArgs
+   * @param bool $throw
+   * @return mixed|null
+   * @throws FactoryClassNotFoundException
+   * @throws MethodNotFoundException
+   */
+  protected static function call(string $factoryMethod, string $class, array $createArgs = null, bool $throw = true)
   {
     $prefix = 'Implementation\\';
     $c = ltrim(substr($class, 0, strlen($prefix)) == $prefix ? substr($class, strlen($prefix)) : $class, '\\');
     $cFactory = 'Implementation\\Factory\\' . $c . 'Factory';
-    if (!class_exists($cFactory)) { // TODO: check for typeof relevant interface or if function exists, improve error handling
+    if (!class_exists($cFactory)) {
       if ($throw) {
         throw new FactoryClassNotFoundException($cFactory);
       }
       return null;
     }
     $factory = new $cFactory;
-    if (!method_exists($factory, 'create')) {
+    if (!method_exists($factory, $factoryMethod)) {
       if ($throw) {
-        throw new MethodNotFoundException($cFactory, 'create');
+        throw new MethodNotFoundException($cFactory, $factoryMethod);
       }
       return null;
     }
-    return $factory->create();
+    return is_null($createArgs) ? $factory->$factoryMethod() : call_user_func([$factory, $factoryMethod], ...$createArgs);
   }
 }

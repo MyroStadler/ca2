@@ -9,7 +9,8 @@
 /local/*
 /docker-compose.override.yml
 
-# .dist files
+# .example files
 /.env
+/.env.test
 /phpunit.xml
 

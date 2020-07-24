@@ -13,15 +13,14 @@
             "Core\\": "src/Core/",
             "Delivery\\": "src/Delivery/",
             "Implementation\\": "src/Implementation/",
-            "Test\\Core\\": "tests/Core/",
-            "Test\\Delivery\\": "tests/Delivery/",
-            "Test\\Implementation\\": "tests/Implementation/"
+            "Test\\": "tests/src/"
         }
     },
     "require": {
         "phpunit/phpunit": "^9.2",
         "twig/twig": "^3.0",
-        "myrostadler/namestream": "^1.0"
+        "myrostadler/namestream": "^1.0",
+        "vlucas/phpdotenv": "^5.1"
     }
 
 }

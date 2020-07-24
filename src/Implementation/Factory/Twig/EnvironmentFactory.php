@@ -13,15 +13,14 @@ class EnvironmentFactory implements EnvironmentFactoryInterface
 {
   use PersistentInstanceTrait;
 
-  /**
-   * @param bool $new If this is true a new instance is returned, else a new instance is returned
-   * @return EnvironmentFactory
-   */
   public function create(): Twig
   {
-    return $this->getPersistentInstance(function() {
-      $loader = new FilesystemLoader(BASE_DIR . '/templates');
-      return new Twig($loader);
-    });
+    $loader = new FilesystemLoader(BASE_DIR . '/templates');
+    return new Twig($loader);
+  }
+
+  public function retrieve(): Twig
+  {
+    return $this->getPersistentInstance([$this, 'create']);
   }
 }
